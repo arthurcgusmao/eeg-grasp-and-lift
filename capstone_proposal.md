@@ -94,9 +94,7 @@ In this section, provide the details for a benchmark model or result that relate
 
 Lots of models can be found at [the Kaggle competition webpage](https://www.kaggle.com/c/grasp-and-lift-eeg-detection/leaderboard). From there, we can see that the best results are around 0.98 for the mean columnwise area under receiver operating characteristic curve.
 
-Since in this project we intend to use deep neural networks as the model of adoption, it will be interesting to compare the result both with similar and different models.
-............(see kernels at kaggle that use both NNs and not NNs and mention them here)..............
-
+Since in this project we intend to use deep neural networks as the model of adoption, it will be interesting to compare the result both with similar and different models. From the competition's webpage, we see models that use neural networks, such as [this one](https://www.kaggle.com/bitsofbits/naive-nnet), for instance, and models that use other methods, such as [this model based on SVMs](https://www.kaggle.com/karma86/rf-lda-lr-v2-1) and [this model based on a mixture of classifiers](https://www.kaggle.com/mostafafr/rf-lda-lr-v2-1).
 
 
 ### Evaluation Metrics
@@ -104,9 +102,7 @@ Since in this project we intend to use deep neural networks as the model of adop
 
 In this section, propose at least one evaluation metric that can be used to quantify the performance of both the benchmark model and the solution model. The evaluation metric(s) you propose should be appropriate given the context of the data, the problem statement, and the intended solution. Describe how the evaluation metric(s) are derived and provide an example of their mathematical representations (if applicable). Complex evaluation metrics should be clearly defined and quantifiable (can be expressed in mathematical or logical terms). -->
 
-The metric this project will focus on is the mean column-wise AUC (that is, the mean of the individual areas under the ROC curve for each predicted column). The reason for this choice is that all models in the Kaggle competition were already evaluated under this metric, making it easy to compare the performance of the model developed through this project.
-
-Further, the mean column-wise AUC is an interesting metric because it ....................
+The metric this project will focus on is the mean column-wise AUC, that is, the mean of the individual areas under the ROC curve for each predicted column. The reason for this choice is that the mean column-wise AUC discourages the model from not being very discriminative. This is specially valuable when one class (one type of movement) occurs for a very long period of time. If we were to use accuracy instead of AUC, in this case the model could likely start to predict that in most instances (or most periods of time) one class of movement is the most likely to occur, not really discriminating between the possible movements the person is making. Further, all models in the Kaggle competition were already evaluated under this metric, making it easy to compare the performance of the model developed through this project.
 
 
 ### Project Design
@@ -114,8 +110,9 @@ Further, the mean column-wise AUC is an interesting metric because it ..........
 
 <!-- In this final section, summarize a theoretical workflow for approaching a solution given the problem. Provide thorough discussion for what strategies you may consider employing, what analysis of the data might be required before being used, or which algorithms will be considered for your implementation. The workflow and discussion that you provide should align with the qualities of the previous sections. Additionally, you are encouraged to include small visualizations, pseudocode, or diagrams to aid in describing the project design, but it is not required. The discussion should clearly outline your intended workflow of the capstone project. -->
 
-test
+Question: if we are using mean auc roc as the metric of choice, should we use it in the NN backprop metric?
 
+- What if I use a NN to approximate the AUC function in this problem and then use it as the cost function?
 
 
 
