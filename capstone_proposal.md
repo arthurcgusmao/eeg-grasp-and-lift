@@ -94,7 +94,7 @@ In this section, provide the details for a benchmark model or result that relate
 
 Lots of models can be found at [the Kaggle competition webpage](https://www.kaggle.com/c/grasp-and-lift-eeg-detection/leaderboard). From there, we can see that the best results are around 0.98 for the mean columnwise area under receiver operating characteristic curve.
 
-Since in this project we intend to use deep neural networks as the model of adoption, it will be interesting to compare the result both with similar and different models. From the competition's webpage, we see models that use neural networks, such as [this one](https://www.kaggle.com/bitsofbits/naive-nnet), for instance, and models that use other methods, such as [this model based on SVMs](https://www.kaggle.com/karma86/rf-lda-lr-v2-1) and [this model based on a mixture of classifiers](https://www.kaggle.com/mostafafr/rf-lda-lr-v2-1).
+Since in this project we intend to use deep neural networks as the model of adoption, it will be interesting to compare the result both with similar and different models. From the competition's webpage, we see models that use neural networks, such as [an CNN model](https://www.kaggle.com/anlthms/convnet-0-89) and [a simpler one](https://www.kaggle.com/bitsofbits/naive-nnet), for instance, and models that use other methods, such as [this model based on SVMs](https://www.kaggle.com/karma86/rf-lda-lr-v2-1) and [this model based on a mixture of classifiers](https://www.kaggle.com/mostafafr/rf-lda-lr-v2-1).
 
 
 ### Evaluation Metrics
@@ -110,9 +110,21 @@ The metric this project will focus on is the mean column-wise AUC, that is, the 
 
 <!-- In this final section, summarize a theoretical workflow for approaching a solution given the problem. Provide thorough discussion for what strategies you may consider employing, what analysis of the data might be required before being used, or which algorithms will be considered for your implementation. The workflow and discussion that you provide should align with the qualities of the previous sections. Additionally, you are encouraged to include small visualizations, pseudocode, or diagrams to aid in describing the project design, but it is not required. The discussion should clearly outline your intended workflow of the capstone project. -->
 
-Question: if we are using mean auc roc as the metric of choice, should we use it in the NN backprop metric?
+As already mentioned, the first approach will be to use neural networks. An important thing to do is to look at the balance of the labels for the training examples. We must make sure that there is not a significant imbalance in order to use traditional score functions, such as a [softmax cross-entropy](https://www.tensorflow.org/api_docs/python/tf/nn/softmax_cross_entropy_with_logits).
 
-- What if I use a NN to approximate the AUC function in this problem and then use it as the cost function?
+Next, we are going to test different architecture types. The first architectural feature we are going to use is convolutional layers. They will be designed in order to take advantage of a possible spatial relationship between the input variables, which may or may not be relevant. Following, we are going to explore the sequential nature of the problem. Since the events always happen in the same order, building a recurrent architecture that is able to store information from the past may increase our prediction capacity. After the architecure is defined, we are going to tune the hyper-parameter, which will depend on the architecture itself.
+
+When it comes to hyper-parameter tuning, we are going to adopt the following strategy:
+
+- Start with some acceptable values for all hyper-parameters
+- Tune the mini-batch size first, as suggested [here](http://neuralnetworksanddeeplearning.com/chap3.html#how_to_choose_a_neural_network's_hyper-parameters).
+- Use an adaptative learning rate, through the [tensorflow's AdamOptimizer](https://www.tensorflow.org/api_docs/python/tf/train/AdamOptimizer), with the default initial hyper-parameters.
+- (continue seeing udacity's hyperparameter classes)
+
+If we find that the number of examples could be a factor that is limiting the algorithm from capturing the nature of the problem, we can go for a smaller model and maybe apply dimensionality reduction on the data. Algorithms such as Principal Component Analysis (PCA) can then be used. At first, however, we will not want to perform this sort of strategies on the training data because we don't know if it will be necessary and if they can somehow diminish the capability of the model the learn a useful representation. We hope that the convolutional layers will be capable of dealing well with data without the use of these strategies.
+
+If, after all different architectures tried and all hyperparameteres tuning, we are still uncapable of achieving good performance with neural networks, other algorithms will be tried. However, as we saw in the competition's webpage, there are good results with neural networks, so this should not be the case.
+
 
 
 
