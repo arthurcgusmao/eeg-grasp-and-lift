@@ -2,7 +2,7 @@
 
 ## Capstone Proposal
 Arthur Colombini Gusmão  
-December 29th, 2017
+December 29th, 2017; updated on June 1st, 2018.
 
 ## Proposal
 <!-- _(approx. 2-3 pages)_ -->
@@ -34,7 +34,9 @@ The problem this project addresses is how to build a model or algorithm that is 
 
 In this section, the dataset(s) and/or input(s) being considered for the project should be thoroughly described, such as how they relate to the problem and why they should be used. Information such as how the dataset or input is (was) obtained, and the characteristics of the dataset or input, should be included with relevant references and citations as necessary It should be clear how the dataset(s) or input(s) will be used in the project and whether their use is appropriate given the context of the problem. -->
 
-The data contains EEG recordings of subjects performing graps-and-lift (GAL) trials. [This YouTube video](https://youtu.be/y3_Izuop2gY) shows an example of a trial.
+The data contains EEG recordings of subjects performing graps-and-lift (GAL) trials. The following video shows an example of a trial:
+
+[![Example of recorded movement](https://img.youtube.com/vi/y3_Izuop2gY/0.jpg)](https://youtu.be/y3_Izuop2gY)
 
 There are 12 subjects in total, 10 series of trials for each subject, and approximately 30 trials within each series. The number of trials varies for each series.
 
@@ -102,7 +104,7 @@ Since in this project we intend to use deep neural networks, it will be interest
 
 In this section, propose at least one evaluation metric that can be used to quantify the performance of both the benchmark model and the solution model. The evaluation metric(s) you propose should be appropriate given the context of the data, the problem statement, and the intended solution. Describe how the evaluation metric(s) are derived and provide an example of their mathematical representations (if applicable). Complex evaluation metrics should be clearly defined and quantifiable (can be expressed in mathematical or logical terms). -->
 
-The metric this project will focus on is the mean column-wise AUC, that is, the mean of the individual areas under the ROC curve for each predicted column. The reason for this choice is that the mean column-wise AUC discourages the model from not being very discriminative. This is specially valuable when one class (one type of movement) occurs for a very long period of time. If we were to use accuracy instead of AUC, in this case the model could likely start to predict that in most instances (or most periods of time) one class of movement is the most likely to occur, not really discriminating between the possible movements the person is making. Further, all models in the Kaggle competition were already evaluated under this metric, making it easy to compare the performance of the model developed through this project.
+The metric this project will focus on is the mean column-wise AUC, that is, the mean of the individual areas under the ROC curve for each predicted column. The reason for this choice is that the mean column-wise AUC discourages the model from not being very discriminative. This is specially valuable when one class (one type of movement) occurs for a very long period of time. If we were to use accuracy instead of AUC, the model could likely start to predict that in most instances (or most periods of time) one class of movement is the most likely to occur, not really discriminating between the possible movements the person is making. Further, all models in the Kaggle competition were already evaluated under this metric, making it easy to compare the model's performance.
 
 
 ### Project Design
@@ -110,27 +112,36 @@ The metric this project will focus on is the mean column-wise AUC, that is, the 
 
 <!-- In this final section, summarize a theoretical workflow for approaching a solution given the problem. Provide thorough discussion for what strategies you may consider employing, what analysis of the data might be required before being used, or which algorithms will be considered for your implementation. The workflow and discussion that you provide should align with the qualities of the previous sections. Additionally, you are encouraged to include small visualizations, pseudocode, or diagrams to aid in describing the project design, but it is not required. The discussion should clearly outline your intended workflow of the capstone project. -->
 
-As already mentioned, the first approach will be to use neural networks. An important thing to do is to look at the balance of the labels for the training examples. We must make sure that there is not a significant imbalance in order to use traditional score functions, such as a [softmax cross-entropy](https://www.tensorflow.org/api_docs/python/tf/nn/softmax_cross_entropy_with_logits).
+As already mentioned, the first model we will experiment with are neural networks. Before that, however, we must explore and understand the data. An important thing to do is to look at the label balance. We must make sure that there is not a significant imbalance in order to be confident that cost functions such as the [sigmoid cross-entropy](https://www.tensorflow.org/api_docs/python/tf/nn/sigmoid_cross_entropy_with_logits) will be effective.
 
-Next, we are going to test different architecture types. The first architectural feature we are going to consider is convolutional layers. They will be designed to take advantage of a possible spatial relationship between the input variables. However, since this spatial relationship may not be really relevant, we are going to explore the data first, using traditional methods.
-
-Following, we are going to explore the sequential nature of the problem. Since the events always happen in the same order, building a recurrent architecture that is able to store information from the past may increase our prediction capacity. Since we already know that the sequence of movements is always the same, there is no need to explore the data further. However, we are unsure if we would be capable of building an RNN that will be able to use this pattern in an effective manner (considering the limitation on the number of observations we have).
+Next, we are going to test different architecture types. We will start with feedforward neural networks before moving into more elaborate architectures. After assessing the initial model's performance, we are going to experiment with convolutional layers. They will be designed to take advantage of the temporal characteristic of the input variables. Of course, we could easily employ *recursive neural networks* (RNNs) model the same phenomenon, but recently convolutional networks (ConvNets) have been shown to achieve state-of-art results and be comparable to RNNs ([Borovykh et al., 2017](https://arxiv.org/pdf/1703.04691.pdf)). Furthermore, ConvNets [can be faster](https://medium.com/@TalPerry/convolutional-methods-for-text-d5260fd5675f) and therefore will allow us to have a feedback on model performance in less time, accelerating the development cycle.
 
 After the architecure is fixed, we are going to tune the hyper-parameters. At this stage, we are going to adopt the following strategy:
 
 - Start with some acceptable values for all hyper-parameters.
-- Tune the mini-batch size first. The values considered for the mini-batch size will vary between 32 and 256.
-- Use an adaptative learning rate, through the [tensorflow's AdamOptimizer](https://www.tensorflow.org/api_docs/python/tf/train/AdamOptimizer), with the default initial hyper-parameters.
-- For the number of epochs, early stopping will be used. That means we are going to stop the learning process when the validation error starts increasing, given some tolerance measure.
-- The starting number of hidden layers in the model will depend on the architecture adopted. It has been observed that up to 3 hidden layers tend to work very good in fully connected networks, while more than that does not help much. When it comes to convolutional networks tough, the more hidden layers there are the better the algorithm tends to perform in general.
+- Tune the mini-batch size first. The values considered for the mini-batch size usually vary between 32 and 256.
+- Use an adaptative learning rate, through the [tensorflow's AdamOptimizer](https://www.tensorflow.org/api_docs/python/tf/train/AdamOptimizer), with the default initial hyper-parameters. We may experiment with different learning rates, however, the default parameters usually work well in this implementation.
+- For the number of epochs, early stopping may be used. Early stopping is when we stop the learning process when the validation error starts increasing, given some tolerance measure.
+- The starting number of hidden layers in the model will depend on the architecture adopted. It has been observed that up to 3 hidden layers tend to work very good in fully connected networks, while more than that does not help much. When it comes to ConvNets tough, the more hidden layers there are the better the algorithm tends to perform in general, at least in image classification problems. When dealing with convolutions for time series classification this may not hold, and it is something we are going to experiment with.
 - The gap between the validation and training error will guide us on the number of hidden units in each layer (and for the number of hidden layers as well). The adoption of techniques such as dropout or L2 regularization will also influence on that. A good rule for the number of hidden units is to increase them until the validation error stops increasing.
 - More guidelines on how to tune the hyperparameters can also be found [here](http://neuralnetworksanddeeplearning.com/chap3.html#how_to_choose_a_neural_network's_hyper-parameters).
 
-If we find that the number of examples could be a factor that is limiting the algorithm from capturing the nature of the problem, we can go for a smaller model and maybe apply dimensionality reduction on the data. Algorithms such as Principal Component Analysis (PCA) can then be used. At first, however, we will not want to perform this sort of strategies on the training data because we don't know if it will be necessary and if they can somehow diminish the capability of the model the learn a useful representation. We hope that the convolutional layers will be capable of dealing well with data without the use of these strategies.
+If we find that the number of examples could be a factor that is limiting the algorithm from capturing the nature of the problem, we can go for a smaller model and maybe apply dimensionality reduction on the data. Algorithms such as Principal Component Analysis (PCA) can then be used. At first, however, we will not want to perform this sort of strategy because we do not know if it will be necessary and if it can somehow diminish the capability of the model to learn a useful representation. Further, it has been shown that ad-hoc feature extraction can be redundant for physiology-based modeling ([Martinez et al., 2013](https://ieeexplore.ieee.org/document/6496209/)). We hope that the convolutional layers will be capable of dealing well with data without the use of these strategies.
 
 If, after all different architectures tried and hyperparameteres extensively tuned, we are still unable of achieving a good performance with neural networks (at least similar to the baselines presented above), other algorithms will be tried. However, as we saw in the competition's webpage, there are good results with neural networks, so this should not be the case.
 
+### References
 
+[weblink] Grasp-and-Lift EEG Detection, Kaggle Competition. Accessed on 01/06/2018. URL: [https://www.kaggle.com/c/grasp-and-lift-eeg-detection](https://www.kaggle.com/c/grasp-and-lift-eeg-detection)
+
+Anastasia Borovykh, Sander Bohte and Cornelis W. Oosterlee. "Conditional Time Series Forecasting with Convolutional Neural Networks." arXiv:1703.04691, 2017. URL: [https://arxiv.org/pdf/1703.04691.pdf](https://arxiv.org/pdf/1703.04691.pdf).
+
+Hector P. Martinez, Yoshua Bengio and Georgios N. Yannakakis. "Learning deep physiological models of affect," in IEEE Computational Intelligence Magazine, vol. 8, no. 2, pp. 20-33, May 2013. doi: 10.1109/MCI.2013.2247823. URL: [http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=6496209&isnumber=6496193](http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=6496209&isnumber=6496193)
+
+Michael A. Nielsen, "Neural Networks and Deep Learning", Determination Press, 2015.
+URL: [http://neuralnetworksanddeeplearning.com/chap3.html#how_to_choose_a_neural_network's_hyper-parameters](http://neuralnetworksanddeeplearning.com/chap3.html#how_to_choose_a_neural_network's_hyper-parameters)
+
+Tal Perry. "Convolutional Methods for Text", Medium (website). Accessed on 01/06/2018. URL: [https://medium.com/\@TalPerry/convolutional-methods-for-text-d5260fd5675f](https://medium.com/@TalPerry/convolutional-methods-for-text-d5260fd5675f)
 
 
 <!--
