@@ -7,7 +7,7 @@ December 29th, 2017; updated on June 1st, 2018.
 ## Proposal
 <!-- _(approx. 2-3 pages)_ -->
 
-Data and project guidelines for this proposal has been taken from [a Kaggle competition on EEG recordings](https://www.kaggle.com/c/grasp-and-lift-eeg-detection).
+Data and project guidelines for this proposal had been taken from [a Kaggle competition on EEG recordings](https://www.kaggle.com/c/grasp-and-lift-eeg-detection).
 
 ### Domain Background
 <!-- _(approx. 1-2 paragraphs)_ -->
@@ -96,7 +96,7 @@ In this section, provide the details for a benchmark model or result that relate
 
 Lots of models can be found at [the Kaggle competition webpage](https://www.kaggle.com/c/grasp-and-lift-eeg-detection/leaderboard). From there, we can see that the best results are around 0.98 for the mean columnwise area under receiver operating characteristic curve.
 
-Since in this project we intend to use deep neural networks, it will be interesting to compare the result both with similar and different models. From the competition's webpage, we see models that use neural networks, such as [an CNN model](https://www.kaggle.com/anlthms/convnet-0-89) and [a simpler one](https://www.kaggle.com/bitsofbits/naive-nnet), for instance, and models that use other methods, such as [this model based on SVMs](https://www.kaggle.com/karma86/rf-lda-lr-v2-1) and [this model based on a mixture of classifiers](https://www.kaggle.com/mostafafr/rf-lda-lr-v2-1).
+Since in this project we intend to use deep neural networks, it will be interesting to compare the result both with similar and different models. From the competition's webpage, we see models that use neural networks, such as [a CNN model](https://www.kaggle.com/anlthms/convnet-0-89) and [a simpler one](https://www.kaggle.com/bitsofbits/naive-nnet), for instance, and models that use other methods, such as [this model based on SVMs](https://www.kaggle.com/karma86/rf-lda-lr-v2-1) and [this model based on a mixture of classifiers](https://www.kaggle.com/mostafafr/rf-lda-lr-v2-1).
 
 
 ### Evaluation Metrics
