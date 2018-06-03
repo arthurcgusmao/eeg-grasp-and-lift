@@ -7,7 +7,7 @@ December 29th, 2017; updated on June 1st, 2018.
 ## Proposal
 <!-- _(approx. 2-3 pages)_ -->
 
-This proposal has been retrieved from [a Kaggle competition on EEG recordings](https://www.kaggle.com/c/grasp-and-lift-eeg-detection).
+Data and project guidelines for this proposal has been taken from [a Kaggle competition on EEG recordings](https://www.kaggle.com/c/grasp-and-lift-eeg-detection).
 
 ### Domain Background
 <!-- _(approx. 1-2 paragraphs)_ -->
