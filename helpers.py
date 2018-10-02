@@ -42,7 +42,7 @@ def standardize_data(data):
 def split_train_valid(data):
     print('Separating data into train/valid...'),
     train = data
-    # We randomly select one series from each subject to be part of the validation set.
+    # We arbitrarily pick one series from each subject to be part of the validation set.
     valid_idxs = reversed([0,14,23,25,37,44,50,57,65,78,80,94])
     valid = [train.pop(i) for i in valid_idxs]
     print('Data separated into train/valid.')

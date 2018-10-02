@@ -42,7 +42,7 @@ def conv_nn(inputs, window_size, is_training=None, n_filters=64, kernel_size=3, 
     lpool = tf.layers.max_pooling1d(lconv, pool_size=2, strides=2, padding='same') # Bx512x64
     lflat = tf.reshape(lpool, [-1, (window_size/2)*n_filters/strides]) # Bx(512*64)
     ldense = tf.layers.dense(lflat, dense_size, activation=tf.nn.relu) # Bx128
-    logits = tf.layers.dense(ldense, 6) # Bx6
+    logits = tf.layers.dense(ldense, 6, name='out_logits') # Bx6
     return logits
 
 def conv_nn_2(inputs, window_size, is_training=None): # Bx1024x32 (supposing window_size=1024 and features=32)
@@ -56,7 +56,7 @@ def conv_nn_2(inputs, window_size, is_training=None): # Bx1024x32 (supposing win
     lflat = tf.reshape(lpool, [-1, (window_size/8)*16]) # flatten to apply dense layer
     ldense1 = tf.layers.dense(lflat, 256, activation=tf.nn.relu)
     ldense2 = tf.layers.dense(ldense1, 32, activation=tf.nn.relu) 
-    logits = tf.layers.dense(ldense2, 6)
+    logits = tf.layers.dense(ldense2, 6, name='out_logits')
     return logits
 
 def conv_nn_3(inputs, window_size, is_training): # Bx1024x32 (supposing window_size=1024 and features=32)
@@ -88,7 +88,7 @@ def conv_nn_3(inputs, window_size, is_training): # Bx1024x32 (supposing window_s
     ldense2 = tf.layers.batch_normalization(ldense2, training=is_training)
     ldense2 = tf.nn.relu(ldense2)
     # b x 32
-    logits = tf.layers.dense(ldense2, 6)
+    logits = tf.layers.dense(ldense2, 6, name='out_logits')
     # b x 6
     return logits
 

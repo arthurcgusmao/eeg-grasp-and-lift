@@ -21,7 +21,8 @@ from model_defs import conv_nn_2, conv_nn_3, conv_batches_gen
 nn = Model(conv_nn_2, window_size=1024)
 nn.set_data(train, valid)
 nn.fit(
-    epochs=8,
-    batch_size=1024,
+    epochs=16,
+    batch_size=4096,
     batches_gen=conv_batches_gen,
+    lr=0.0001,
 )
