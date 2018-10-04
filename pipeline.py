@@ -26,3 +26,4 @@ nn.fit(
     batches_gen=conv_batches_gen,
     lr=0.0001,
 )
+nn.save_model()
