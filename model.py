@@ -146,6 +146,14 @@ class Model(object):
         mean_auc = roc_auc_score(total_labels, total_predictions, average='macro')
         return mean_auc
     
+    def predict(self, data, batch_size, batches_gen):
+        """Return the predictions for a data series."""
+        total_predictions = []
+        for xx,_ in batches_gen(data, batch_size, self.window_size, shuffle=False):
+            predictions = self.sess.run(self.preds, feed_dict={self.inputs: xx, self.is_training: False})
+            total_predictions.extend(predictions)
+        return total_predictions
+    
     
     def save_model(self):
         """Exports a model to disk"""
