@@ -78,9 +78,13 @@ The problem this project addresses is how to build a model or algorithm that is 
 
 In this section, the dataset(s) and/or input(s) being considered for the project should be thoroughly described, such as how they relate to the problem and why they should be used. Information such as how the dataset or input is (was) obtained, and the characteristics of the dataset or input, should be included with relevant references and citations as necessary It should be clear how the dataset(s) or input(s) will be used in the project and whether their use is appropriate given the context of the problem. -->
 
-The data contains EEG recordings of subjects performing graps-and-lift (GAL) trials. The following video shows an example of a trial:
+The data contains EEG recordings of subjects performing graps-and-lift (GAL) trials. An instance trial can be seen in the following video:
 
-[![Example of recorded movement](https://img.youtube.com/vi/y3_Izuop2gY/0.jpg)](https://youtu.be/y3_Izuop2gY)
+[`https://www.youtube.com/watch?v=y3_Izuop2gY`](https://www.youtube.com/watch?v=y3_Izuop2gY)
+
+A scene from the video is shown in Figure @fig:movement_scene.
+
+![Scene where subject is performing a grasp-and-lift trial.](https://img.youtube.com/vi/y3_Izuop2gY/0.jpg){#fig:movement_scene}
 
 There are 12 subjects in total, 10 series of trials for each subject, and approximately 30 trials within each series. The number of trials varies for each series.
 
@@ -273,13 +277,30 @@ The final model was trained for 16 epochs which took a total of 14.3 hours using
 
 ![Learning curve of the final model.](./images/learning_curve_convnet2.png){#fig:learning_curve}
 
-In order to evaluate the model's robustness, we analyze the AUC in the validation set separately for each label and for each subject. The results are shown in Figure @fig:separate_AUC, where we can see that, in the worst case, the model achieved an AUC score of 0.715163 (for the label HandStart and the 12th subject). To get a bigger picture, we also plot statistics for the partial AUC, shown in Figures @fig:separate_AUC_stats_labels and @fig:separate_AUC_stats_subjects, for labels and subjects, respectively. From these results, we are able to see that the bigger standard deviation for the AUC is of 7.26% and the worst mean value is 80.08%.
+In order to evaluate the model's robustness, we analyze the AUC in the validation set separately for each label and for each subject. The results are shown in Figure @fig:separate_AUC, where we can see that, in the worst case, the model achieved an AUC score of 0.715163 (for the label HandStart and the 12th subject). This means that, even in the worst case, the most is still able to identify in a relatively high percentage of the time moments when the user performed a movement.
+
+In order to get a bigger picture, we also print overall statistics for the AUC (i.e., taking into account the AUC for each label and for each subject):
+<!-- To get a bigger picture, we also plot statistics for the partial AUC, shown in Figures @fig:separate_AUC_stats_labels and @fig:separate_AUC_stats_subjects, for labels and subjects, respectively. From these results, we are able to see that the bigger standard deviation for the AUC is of 7.26% (label HandStart) and the worst mean value is 80.08% (last subject). -->
+
+```text
+count    72.000000
+mean      0.907375
+std       0.066030
+min       0.715163
+25%       0.854200
+50%       0.920667
+75%       0.954248
+max       0.979499
+dtype: float64
+```
+
+Looking at the overall statistics, we have a standard deviation of 6.6% of the mean AUC. We consider these results to be robust, especially when taking into account the limited number of training epochs.
 
 ![Partial AUC for each label and each subject in the validation set.](./images/separate_AUC.png){#fig:separate_AUC}
 
-![Partial AUC statistics for each label in the validation set.](./images/separate_AUC_stats_labels.png){#fig:separate_AUC_stats_labels}
+<!-- ![Partial AUC statistics for each label in the validation set.](./images/separate_AUC_stats_labels.png){#fig:separate_AUC_stats_labels}
 
-![Partial AUC statistics for each subject in the validation set.](./images/separate_AUC_stats_subjects.png){#fig:separate_AUC_stats_subjects}
+![Partial AUC statistics for each subject in the validation set.](./images/separate_AUC_stats_subjects.png){#fig:separate_AUC_stats_subjects} -->
 
 
 
