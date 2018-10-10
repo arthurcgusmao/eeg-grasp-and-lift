@@ -2,7 +2,9 @@
 
 This project contains implementation of a convolutional neural network model used to tackle [a Kaggle competition on EEG recordings](https://www.kaggle.com/c/grasp-and-lift-eeg-detection), used as my final project for the Udacity's Machine Learning Nanodegree course.
 
-For a detailed report about the project's definition, data analysis, methodology, results and conclusions, please refer to the [`./report/capstone_report.pdf`](./report/capstone_report.pdf) file.
+For a detailed report about the project's definition, data analysis, methodology, results and conclusions, please refer to the final report PDF file:
+
+[![](./images/report_print.png)](./report/capstone_report.pdf)
 
 ## License
 
