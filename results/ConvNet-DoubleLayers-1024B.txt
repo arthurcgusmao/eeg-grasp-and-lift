@@ -1,0 +1,247 @@
+def conv_nn_2(inputs, window_size): # Bx1024x32 (supposing window_size=1024 and features=32)
+    # b x ws x 32
+    lconv = tf.layers.conv1d(inputs, filters=32, kernel_size=3, strides=2, activation=tf.nn.relu, padding='same')
+    # b x ws/2 x 32
+    lconv2 = tf.layers.conv1d(lconv, filters=16, kernel_size=3, strides=2, activation=tf.nn.relu, padding='same')
+    # b x ws/4 x 16
+    lpool = tf.layers.max_pooling1d(lconv2, pool_size=2, strides=2, padding='same') # pooling does not affect channels
+    # b x ws/8 x 16
+    lflat = tf.reshape(lpool, [-1, (window_size/8)*16]) # flatten to apply dense layer
+    ldense1 = tf.layers.dense(lflat, 256, activation=tf.nn.relu)
+    ldense2 = tf.layers.dense(ldense1, 32, activation=tf.nn.relu) 
+    logits = tf.layers.dense(ldense2, 6)
+    return logits
+
+train_ms = train
+valid_ms = valid[:1]
+
+nn = Model(conv_nn_2, window_size=1024)
+nn.set_data(train_ms, valid_ms)
+nn.fit(
+    epochs=1000,
+    batch_size=1024,
+    batches_gen=conv_batches_gen,
+)
+
+
+Epoch: 0,	Batch: 976,	Mean Loss (last batches): 0.145131434088
+Epoch: 0,	Batch: 1952,	Mean Loss (last batches): 0.112968327311
+Epoch: 0,	Batch: 2928,	Mean Loss (last batches): 0.12677082369
+Epoch: 0,	Batch: 3904,	Mean Loss (last batches): 0.0796978171415
+Epoch: 0,	Batch: 4880,	Mean Loss (last batches): 0.104712334079
+Epoch: 0,	Batch: 5856,	Mean Loss (last batches): 0.0877261946894
+Epoch: 0,	Batch: 6832,	Mean Loss (last batches): 0.113694066458
+Epoch: 0,	Batch: 7808,	Mean Loss (last batches): 0.103212157959
+Epoch: 0,	Batch: 8784,	Mean Loss (last batches): 0.097332759139
+Epoch: 0,	Batch: 9760,	Mean Loss (last batches): 0.0687983191268
+Epoch: 0,	Batch: 10736,	Mean Loss (last batches): 0.100042946674
+Epoch: 0,	Batch: 11712,	Mean Loss (last batches): 0.0908773105772
+Epoch: 0,	Batch: 12688,	Mean Loss (last batches): 0.0894502694037
+Epoch: 0,	Batch: 13664,	Mean Loss (last batches): 0.0670513886708
+Epoch: 0,	Batch: 14640,	Mean Loss (last batches): 0.104065466332
+-----
+Epoch: 0,	Batch: ----,	Mean Loss (epoch): 0.0992636054824,	Valid Mean AUC: 0.741668310011
+-----
+Epoch: 1,	Batch: 976,	Mean Loss (last batches): 0.12016375988
+Epoch: 1,	Batch: 1952,	Mean Loss (last batches): 0.0956159984615
+Epoch: 1,	Batch: 2928,	Mean Loss (last batches): 0.0844165264999
+Epoch: 1,	Batch: 3904,	Mean Loss (last batches): 0.079466467808
+Epoch: 1,	Batch: 4880,	Mean Loss (last batches): 0.112747000926
+Epoch: 1,	Batch: 5856,	Mean Loss (last batches): 0.101928503886
+Epoch: 1,	Batch: 6832,	Mean Loss (last batches): 0.0726699430023
+Epoch: 1,	Batch: 7808,	Mean Loss (last batches): 0.0810439068836
+Epoch: 1,	Batch: 8784,	Mean Loss (last batches): 0.0932032067681
+Epoch: 1,	Batch: 9760,	Mean Loss (last batches): 0.0788461861968
+Epoch: 1,	Batch: 10736,	Mean Loss (last batches): 0.0727937561147
+Epoch: 1,	Batch: 11712,	Mean Loss (last batches): 0.0961043912696
+Epoch: 1,	Batch: 12688,	Mean Loss (last batches): 0.0835297836441
+Epoch: 1,	Batch: 13664,	Mean Loss (last batches): 0.0906141541809
+Epoch: 1,	Batch: 14640,	Mean Loss (last batches): 0.104647241075
+-----
+Epoch: 1,	Batch: ----,	Mean Loss (epoch): 0.0913819530708,	Valid Mean AUC: 0.844543883244
+-----
+Epoch: 2,	Batch: 976,	Mean Loss (last batches): 0.083160112872
+Epoch: 2,	Batch: 1952,	Mean Loss (last batches): 0.085232453713
+Epoch: 2,	Batch: 2928,	Mean Loss (last batches): 0.0805923361369
+Epoch: 2,	Batch: 3904,	Mean Loss (last batches): 0.0952489954268
+Epoch: 2,	Batch: 4880,	Mean Loss (last batches): 0.0907798070747
+Epoch: 2,	Batch: 5856,	Mean Loss (last batches): 0.0785382450364
+Epoch: 2,	Batch: 6832,	Mean Loss (last batches): 0.0804202528625
+Epoch: 2,	Batch: 7808,	Mean Loss (last batches): 0.0840336256751
+Epoch: 2,	Batch: 8784,	Mean Loss (last batches): 0.101986545354
+Epoch: 2,	Batch: 9760,	Mean Loss (last batches): 0.0957214493809
+Epoch: 2,	Batch: 10736,	Mean Loss (last batches): 0.0781592161075
+Epoch: 2,	Batch: 11712,	Mean Loss (last batches): 0.0940684096854
+Epoch: 2,	Batch: 12688,	Mean Loss (last batches): 0.0852491341161
+Epoch: 2,	Batch: 13664,	Mean Loss (last batches): 0.0836245354698
+Epoch: 2,	Batch: 14640,	Mean Loss (last batches): 0.0825881159224
+-----
+Epoch: 2,	Batch: ----,	Mean Loss (epoch): 0.0877312493838,	Valid Mean AUC: 0.801125609134
+-----
+Epoch: 3,	Batch: 976,	Mean Loss (last batches): 0.0888722161921
+Epoch: 3,	Batch: 1952,	Mean Loss (last batches): 0.0771028790101
+Epoch: 3,	Batch: 2928,	Mean Loss (last batches): 0.0901185552642
+Epoch: 3,	Batch: 3904,	Mean Loss (last batches): 0.101232201719
+Epoch: 3,	Batch: 4880,	Mean Loss (last batches): 0.0751526508079
+Epoch: 3,	Batch: 5856,	Mean Loss (last batches): 0.111002944471
+Epoch: 3,	Batch: 6832,	Mean Loss (last batches): 0.0716080267377
+Epoch: 3,	Batch: 7808,	Mean Loss (last batches): 0.110294632811
+Epoch: 3,	Batch: 8784,	Mean Loss (last batches): 0.0810943815884
+Epoch: 3,	Batch: 9760,	Mean Loss (last batches): 0.0675932632113
+Epoch: 3,	Batch: 10736,	Mean Loss (last batches): 0.0961268594283
+Epoch: 3,	Batch: 11712,	Mean Loss (last batches): 0.0931475286877
+Epoch: 3,	Batch: 12688,	Mean Loss (last batches): 0.0790555777151
+Epoch: 3,	Batch: 13664,	Mean Loss (last batches): 0.0882372749002
+Epoch: 3,	Batch: 14640,	Mean Loss (last batches): 0.0848248129857
+-----
+Epoch: 3,	Batch: ----,	Mean Loss (epoch): 0.0868122659212,	Valid Mean AUC: 0.632412581967
+-----
+Epoch: 4,	Batch: 976,	Mean Loss (last batches): 0.0751815057729
+Epoch: 4,	Batch: 1952,	Mean Loss (last batches): 0.0830959309405
+Epoch: 4,	Batch: 2928,	Mean Loss (last batches): 0.0758872873213
+Epoch: 4,	Batch: 3904,	Mean Loss (last batches): 0.110496311746
+Epoch: 4,	Batch: 4880,	Mean Loss (last batches): 0.0945270222358
+Epoch: 4,	Batch: 5856,	Mean Loss (last batches): 0.0994011756889
+Epoch: 4,	Batch: 6832,	Mean Loss (last batches): 0.0880316048776
+Epoch: 4,	Batch: 7808,	Mean Loss (last batches): 0.102906122562
+Epoch: 4,	Batch: 8784,	Mean Loss (last batches): 0.0884743979858
+Epoch: 4,	Batch: 9760,	Mean Loss (last batches): 0.100991326428
+Epoch: 4,	Batch: 10736,	Mean Loss (last batches): 0.0698567047926
+Epoch: 4,	Batch: 11712,	Mean Loss (last batches): 0.0624461403887
+Epoch: 4,	Batch: 12688,	Mean Loss (last batches): 0.0771408745139
+Epoch: 4,	Batch: 13664,	Mean Loss (last batches): 0.0930877678296
+Epoch: 4,	Batch: 14640,	Mean Loss (last batches): 0.095327361655
+-----
+Epoch: 4,	Batch: ----,	Mean Loss (epoch): 0.0873330849445,	Valid Mean AUC: 0.844321665688
+-----
+Epoch: 5,	Batch: 976,	Mean Loss (last batches): 0.093663004838
+Epoch: 5,	Batch: 1952,	Mean Loss (last batches): 0.0930637159929
+Epoch: 5,	Batch: 2928,	Mean Loss (last batches): 0.0727587150092
+Epoch: 5,	Batch: 3904,	Mean Loss (last batches): 0.0719090245392
+Epoch: 5,	Batch: 4880,	Mean Loss (last batches): 0.0902922487963
+Epoch: 5,	Batch: 5856,	Mean Loss (last batches): 0.0853074447338
+Epoch: 5,	Batch: 6832,	Mean Loss (last batches): 0.082437892056
+Epoch: 5,	Batch: 7808,	Mean Loss (last batches): 0.0877741625588
+Epoch: 5,	Batch: 8784,	Mean Loss (last batches): 0.0891758957161
+Epoch: 5,	Batch: 9760,	Mean Loss (last batches): 0.0984331461884
+Epoch: 5,	Batch: 10736,	Mean Loss (last batches): 0.0940437942173
+Epoch: 5,	Batch: 11712,	Mean Loss (last batches): 0.0868174930507
+Epoch: 5,	Batch: 12688,	Mean Loss (last batches): 0.0703699585348
+Epoch: 5,	Batch: 13664,	Mean Loss (last batches): 0.0991273654298
+Epoch: 5,	Batch: 14640,	Mean Loss (last batches): 0.0798486220797
+-----
+Epoch: 5,	Batch: ----,	Mean Loss (epoch): 0.0860177175098,	Valid Mean AUC: 0.776361256093
+-----
+Epoch: 6,	Batch: 976,	Mean Loss (last batches): 0.0844430495517
+Epoch: 6,	Batch: 1952,	Mean Loss (last batches): 0.0786969577781
+Epoch: 6,	Batch: 2928,	Mean Loss (last batches): 0.0687428052977
+Epoch: 6,	Batch: 3904,	Mean Loss (last batches): 0.0894378651197
+Epoch: 6,	Batch: 4880,	Mean Loss (last batches): 0.0655007168854
+Epoch: 6,	Batch: 5856,	Mean Loss (last batches): 0.0671864348005
+Epoch: 6,	Batch: 6832,	Mean Loss (last batches): 0.0949553918692
+Epoch: 6,	Batch: 7808,	Mean Loss (last batches): 0.0919505422244
+Epoch: 6,	Batch: 8784,	Mean Loss (last batches): 0.0865235780766
+Epoch: 6,	Batch: 9760,	Mean Loss (last batches): 0.102304238329
+Epoch: 6,	Batch: 10736,	Mean Loss (last batches): 0.0796887062705
+Epoch: 6,	Batch: 11712,	Mean Loss (last batches): 0.0995063796027
+Epoch: 6,	Batch: 12688,	Mean Loss (last batches): 0.0841089051953
+Epoch: 6,	Batch: 13664,	Mean Loss (last batches): 0.089204876187
+Epoch: 6,	Batch: 14640,	Mean Loss (last batches): 0.0867595910347
+-----
+Epoch: 6,	Batch: ----,	Mean Loss (epoch): 0.084551565177,	Valid Mean AUC: 0.805725747037
+-----
+Epoch: 7,	Batch: 976,	Mean Loss (last batches): 0.0803032076103
+Epoch: 7,	Batch: 1952,	Mean Loss (last batches): 0.0825203076687
+Epoch: 7,	Batch: 2928,	Mean Loss (last batches): 0.0674798394274
+Epoch: 7,	Batch: 3904,	Mean Loss (last batches): 0.0815054853888
+Epoch: 7,	Batch: 4880,	Mean Loss (last batches): 0.104102693697
+Epoch: 7,	Batch: 5856,	Mean Loss (last batches): 0.0936471872081
+Epoch: 7,	Batch: 6832,	Mean Loss (last batches): 0.0909652366766
+Epoch: 7,	Batch: 7808,	Mean Loss (last batches): 0.0679927352142
+Epoch: 7,	Batch: 8784,	Mean Loss (last batches): 0.0862899286315
+Epoch: 7,	Batch: 9760,	Mean Loss (last batches): 0.107177637154
+Epoch: 7,	Batch: 10736,	Mean Loss (last batches): 0.0678402204288
+Epoch: 7,	Batch: 11712,	Mean Loss (last batches): 0.0745107319818
+Epoch: 7,	Batch: 12688,	Mean Loss (last batches): 0.0926317198729
+Epoch: 7,	Batch: 13664,	Mean Loss (last batches): 0.091617249831
+Epoch: 7,	Batch: 14640,	Mean Loss (last batches): 0.0677248359166
+-----
+Epoch: 7,	Batch: ----,	Mean Loss (epoch): 0.0830947192922,	Valid Mean AUC: 0.788399838817
+-----
+Epoch: 8,	Batch: 976,	Mean Loss (last batches): 0.0859610742091
+Epoch: 8,	Batch: 1952,	Mean Loss (last batches): 0.0716566438282
+Epoch: 8,	Batch: 2928,	Mean Loss (last batches): 0.0815766102336
+Epoch: 8,	Batch: 3904,	Mean Loss (last batches): 0.0715843517102
+Epoch: 8,	Batch: 4880,	Mean Loss (last batches): 0.1004473948
+Epoch: 8,	Batch: 5856,	Mean Loss (last batches): 0.0911667081598
+Epoch: 8,	Batch: 6832,	Mean Loss (last batches): 0.0792035839272
+Epoch: 8,	Batch: 7808,	Mean Loss (last batches): 0.106146194623
+Epoch: 8,	Batch: 8784,	Mean Loss (last batches): 0.0661416886828
+Epoch: 8,	Batch: 9760,	Mean Loss (last batches): 0.0652988707289
+Epoch: 8,	Batch: 10736,	Mean Loss (last batches): 0.0680589321204
+Epoch: 8,	Batch: 11712,	Mean Loss (last batches): 0.094552654979
+Epoch: 8,	Batch: 12688,	Mean Loss (last batches): 0.0749718352858
+Epoch: 8,	Batch: 13664,	Mean Loss (last batches): 0.0985800419849
+Epoch: 8,	Batch: 14640,	Mean Loss (last batches): 0.0911764155624
+-----
+Epoch: 8,	Batch: ----,	Mean Loss (epoch): 0.0830012583475,	Valid Mean AUC: 0.875752623436
+-----
+Epoch: 9,	Batch: 976,	Mean Loss (last batches): 0.0810454983911
+Epoch: 9,	Batch: 1952,	Mean Loss (last batches): 0.0855533066057
+Epoch: 9,	Batch: 2928,	Mean Loss (last batches): 0.101902566614
+Epoch: 9,	Batch: 3904,	Mean Loss (last batches): 0.0894877861327
+Epoch: 9,	Batch: 4880,	Mean Loss (last batches): 0.0699607969009
+Epoch: 9,	Batch: 5856,	Mean Loss (last batches): 0.0764036899653
+Epoch: 9,	Batch: 6832,	Mean Loss (last batches): 0.0838132119831
+Epoch: 9,	Batch: 7808,	Mean Loss (last batches): 0.0813999579384
+Epoch: 9,	Batch: 8784,	Mean Loss (last batches): 0.074520420471
+Epoch: 9,	Batch: 9760,	Mean Loss (last batches): 0.0748806598027
+Epoch: 9,	Batch: 10736,	Mean Loss (last batches): 0.0784093624772
+Epoch: 9,	Batch: 11712,	Mean Loss (last batches): 0.08859094353
+Epoch: 9,	Batch: 12688,	Mean Loss (last batches): 0.0929168135427
+Epoch: 9,	Batch: 13664,	Mean Loss (last batches): 0.0997960891383
+Epoch: 9,	Batch: 14640,	Mean Loss (last batches): 0.0780805722955
+-----
+Epoch: 9,	Batch: ----,	Mean Loss (epoch): 0.0831586649004,	Valid Mean AUC: 0.857450575102
+-----
+Epoch: 10,	Batch: 976,	Mean Loss (last batches): 0.0731747027302
+Epoch: 10,	Batch: 1952,	Mean Loss (last batches): 0.0961479702055
+Epoch: 10,	Batch: 2928,	Mean Loss (last batches): 0.0943298383523
+Epoch: 10,	Batch: 3904,	Mean Loss (last batches): 0.0668691918693
+Epoch: 10,	Batch: 4880,	Mean Loss (last batches): 0.0898048717534
+Epoch: 10,	Batch: 5856,	Mean Loss (last batches): 0.0795141622068
+Epoch: 10,	Batch: 6832,	Mean Loss (last batches): 0.0791704378332
+Epoch: 10,	Batch: 7808,	Mean Loss (last batches): 0.0855358957579
+Epoch: 10,	Batch: 8784,	Mean Loss (last batches): 0.0891542242384
+Epoch: 10,	Batch: 9760,	Mean Loss (last batches): 0.0769037589971
+Epoch: 10,	Batch: 10736,	Mean Loss (last batches): 0.0951207953346
+Epoch: 10,	Batch: 11712,	Mean Loss (last batches): 0.0771912475965
+Epoch: 10,	Batch: 12688,	Mean Loss (last batches): 0.0821933725146
+Epoch: 10,	Batch: 13664,	Mean Loss (last batches): 0.0828527456262
+Epoch: 10,	Batch: 14640,	Mean Loss (last batches): 0.095106722444
+-----
+Epoch: 10,	Batch: ----,	Mean Loss (epoch): 0.0835303579368,	Valid Mean AUC: 0.750751488903
+-----
+
+
+
+
+
+# AUC OVER ALL VALID SERIES
+# -------------------------
+
+nn.set_data(train, valid)
+
+start_time = time.time()
+auc = nn.validate(1024, conv_batches_gen)
+print("AUC: {}".format(auc))
+print('Elapsed time: {}'.format(time.time() - start_time))
+
+AUC: 0.889941700921
+Elapsed time: 552.739305973
+
+
+## NOTES
+## -----
+
+As you can see in training info, the network started to "unlearn" after epoch 8: the mean loss grew and the validation mean AUC decreased thereafter. Since we are dealing with lots of series in each epoch, we do not consider that this could change even with further training. Moreover, models that were trained more than 3 days did not show any improvement, reinforcing this belief.

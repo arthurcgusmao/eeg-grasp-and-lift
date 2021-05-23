@@ -1,0 +1,9 @@
+nn = Model(conv_nn, window_size=32)
+nn.set_data(train, valid)
+nn.fit(
+    epochs=1000, # went until 165
+    batch_size=512,
+    batches_gen=conv_batches_gen,
+)
+
+This model did not converge at all. Even in the last validation tests AUC reached 62% and even around 50%.
